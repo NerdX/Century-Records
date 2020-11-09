@@ -3,10 +3,10 @@ package com.example.centuryrecords;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.browser.customtabs.CustomTabsIntent;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -40,6 +40,7 @@ import java.util.Map;
     private ArrayList<NewsModelClass> news_models;
     private NewsItemsAdapter newsItemsAdapter;
     private static final String URL = "https://saurav.tech/NewsAPI/top-headlines/category/general/in.json";
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -49,11 +50,20 @@ import java.util.Map;
         //CUSTOM - TOOLBAR: -
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_general);
         setSupportActionBar(toolbar);
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.refresh_layout_general_news);
 
         recyclerView = findViewById (R.id.recycler_view_general_news);
         recyclerView.setHasFixedSize(true);
         news_models = new ArrayList<>();
         proceed();
+
+        swipeRefreshLayout.setOnRefreshListener (new SwipeRefreshLayout.OnRefreshListener () {
+            @Override
+            public void onRefresh() {
+                proceed();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
 
     }
 
@@ -104,24 +114,6 @@ import java.util.Map;
 
      }
 
-     //OPTION - MENU: -
-     @Override
-     public boolean onCreateOptionsMenu(Menu menu) {
-
-         MenuInflater menuInflater = getMenuInflater();
-         menuInflater.inflate(R.menu.option_menu,menu);
-         return (true);
-     }
-
-     @Override
-     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-         if(item.getItemId() == R.id.refresh) {
-             proceed();
-         }
-
-         return (true);
-     }
      @Override
      public void onBackPressed() {
          Intent intent =  new Intent(getApplicationContext(), NewsCategories.class);

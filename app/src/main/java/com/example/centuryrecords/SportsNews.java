@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class SportsNews extends AppCompatActivity {
     private ArrayList<NewsModelClass> news_models;
     private NewsItemsAdapter newsItemsAdapter;
     private static String URL = "https://saurav.tech/NewsAPI/top-headlines/category/sports/in.json";
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +45,25 @@ public class SportsNews extends AppCompatActivity {
         //CUSTOM - TOOLBAR: -
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_sports);
         setSupportActionBar(toolbar);
+        swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.refresh_layout_sports_news);
 
         recyclerView = findViewById (R.id.recycler_view_sports_news);
         recyclerView.setHasFixedSize(true);
         news_models = new ArrayList<>();
         proceed();
+
+        swipeRefreshLayout.setOnRefreshListener (new SwipeRefreshLayout.OnRefreshListener () {
+            @Override
+            public void onRefresh() {
+                proceed();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
     private void proceed() {
 
+        getSportsNews();
         recyclerView.setLayoutManager (new LinearLayoutManager (getApplicationContext ()));
         newsItemsAdapter = new NewsItemsAdapter (getApplicationContext (),news_models);
         recyclerView.setAdapter (newsItemsAdapter);
@@ -92,24 +104,6 @@ public class SportsNews extends AppCompatActivity {
         });
 
         MySingleton.getInstance(getApplicationContext ()).addToRequestQueue(jsonObjectRequest);
-    }
-    //OPTION - MENU: -
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.option_menu,menu);
-        return (true);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        if(item.getItemId() == R.id.refresh) {
-            proceed();
-        }
-
-        return (true);
     }
 
     @Override
