@@ -82,7 +82,7 @@ public class ViewNews extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.option_menu_2,menu);
+        menuInflater.inflate(R.menu.option_menu,menu);
         return (true);
     }
 
